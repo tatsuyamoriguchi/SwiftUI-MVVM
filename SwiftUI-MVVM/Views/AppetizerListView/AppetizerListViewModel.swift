@@ -1,36 +1,24 @@
 //
-//  AppetizerListView.swift
+//  AppetizerListViewModel.swift
 //  SwiftUI-MVVM
 //
-//  Created by Sean Allen on 5/24/21.
+//  Created by Tatsuya Moriguchi on 3/31/22.
 //
 
-import SwiftUI
+import Foundation
 
-struct AppetizerListView: View {
-    
-    @State private var appetizers: [Appetizer] = []
-    @State private var isLoading = false
-    @State private var alertItem: AlertItem?
-        
-    var body: some View {
-        ZStack {
-            NavigationView {
-                List(appetizers, id: \.id) { appetizer in
-                    AppetizerCell(appetizer: appetizer)
-                }
-                .navigationTitle("🍟 Appetizers")
-            }
-            .onAppear { getAppetizers() }
-            
-            if isLoading { LoadingView() }
-        }
-        
-        .alert(item: $alertItem) { alertItem in
-            Alert(title: alertItem.title, message: alertItem.message, dismissButton: alertItem.dismissButton)
-        }
-    }
-    
+// Use class for view model since you want to maintain state in the view model
+// final keyword: You cannot subclass it for optimaization
+// ObservableObject: Object is able to be observed
+final class AppetizerListViewModel: ObservableObject {
+
+    // @Published keyword: Because of ObservableObject, anytime one of @Published variables changed,
+    // @Published monitors that variable for any change, SwiftUI updates UI.
+    // Change View to listen to the change
+    @Published var appetizers: [Appetizer] = []
+    @Published var isLoading = false
+    @Published var alertItem: AlertItem?
+
     func getAppetizers() {
         isLoading = true
         
@@ -60,11 +48,6 @@ struct AppetizerListView: View {
             }
         }
     }
-}
-
-
-struct AppetizerListView_Previews: PreviewProvider {
-    static var previews: some View {
-        AppetizerListView()
-    }
+    
+    
 }
